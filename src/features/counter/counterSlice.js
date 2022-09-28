@@ -51,7 +51,7 @@ export const counterSlice = createSlice({
       state.value = (10 * state.stage.chapter) * (state.stage.level * state.stage.chapter * 1.5)
     },
     hitEnemy: (state, action) => {
-      if(state.currentEnemyHealth) {
+      if(state.currentEnemyHealth && state.currentEnemyHealth > 0) {
         state.currentEnemyHealth -= action.payload
       } else {
         state.currentEnemyHealth = state.value - action.payload
@@ -94,13 +94,13 @@ export const { resetState, hitEnemy, incrementByAmount, enemyKilled, upgradeWeap
 export const selectCount = (state) => state.counter.value;
 export const money = (state) => state.counter.money;
 export const stage = (state) => state.counter.stage;
-export const enemyBounty = (state) => (state.counter.stage.chapter * 10) * state.counter.stage.level * state.counter.stage.chapter
 export const charDamage = (state) => state.counter.charDamage;
 export const weaponLevel = (state) => state.counter.weaponLevel;
 export const weaponUpgradePrice = (state) => state.counter.weaponLevel * 50;
 export const weaponDamage = (state) => state.counter.weaponDamage;
-export const totalDamage = (state) => state.counter.charDamage + state.counter.weaponDamage
 export const currentEnemyHealth = (state) => state.counter.currentEnemyHealth;
+export const enemyBounty = (state) => (state.counter.stage.chapter * 10) * state.counter.stage.level * state.counter.stage.chapter
+export const totalDamage = (state) => state.counter.charDamage + state.counter.weaponDamage
 
 
 

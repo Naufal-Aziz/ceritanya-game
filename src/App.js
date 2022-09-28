@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
-import { resetState, hitEnemy, totalDamage, upgradeWeapon, weaponLevel, weaponUpgradePrice, money } from './features/counter/counterSlice';
+import { resetState, hitEnemy, totalDamage, upgradeWeapon, weaponLevel, weaponUpgradePrice, money, currentEnemyHealth, enemyKilled, selectCount } from './features/counter/counterSlice';
 import Header from './components/Header'
 import Character from './features/character/Character';
 import Enemy from './features/enemy/Enemy';
@@ -11,11 +11,14 @@ function App() {
   const weaponLv = useSelector(weaponLevel)
   const upgradePrice = useSelector(weaponUpgradePrice)
   const charMoney = useSelector(money)
+  const remainingEnemyHealth = useSelector(currentEnemyHealth)
+  const enemyHealth = useSelector(selectCount)
+  const remainingHealthToCount = remainingEnemyHealth ? remainingEnemyHealth : enemyHealth
 
   const dispatch = useDispatch()
 
   const dealDamage = () => {
-    dispatch(hitEnemy(hitDamage))
+      dispatch(hitEnemy(hitDamage))
   }
 
   const resetGame = () => {

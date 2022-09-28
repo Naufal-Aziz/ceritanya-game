@@ -13,7 +13,7 @@ const Enemy = () => {
   let enemyHealth = useSelector(selectCount);
   let bounty = useSelector(enemyBounty);
   let currentHealth = useSelector(currentEnemyHealth);
-  let currentToCount = currentHealth ? currentHealth : enemyHealth;
+  let currentToCount = currentHealth && currentHealth >= 0 ? currentHealth : enemyHealth;
   let healthPercentage = (currentToCount / enemyHealth) * 100;
 
   useEffect(() => {
