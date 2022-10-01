@@ -1,7 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchCount } from './counterAPI';
-
-
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { fetchCount } from "./counterAPI";
 
 // const initialState = JSON.parse(localStorage.getItem('savedGame'))
 
@@ -9,12 +7,13 @@ const initialState = {
   money: 0,
   charDamage: 1,
   currentEnemyHealth: null,
-  stage: {chapter: 1, level: 1},
+  stage: { chapter: 1, level: 1 },
   status: "idle",
   value: 10,
   weaponDamage: 0,
-  weaponLevel: 1
-}
+  weaponLevel: 1,
+  showSkillOneInput: false,
+};
 // console.log(JSON.parse(localStorage.getItem('savedGame')))
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -23,7 +22,7 @@ const initialState = {
 // code can then be executed and other actions can be dispatched. Thunks are
 // typically used to make async requests.
 export const incrementAsync = createAsyncThunk(
-  'counter/fetchCount',
+  "counter/fetchCount",
   async (amount) => {
     const response = await fetchCount(amount);
     // The value we return becomes the `fulfilled` action payload
@@ -32,7 +31,7 @@ export const incrementAsync = createAsyncThunk(
 );
 
 export const counterSlice = createSlice({
-  name: 'counter',
+  name: "counter",
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
@@ -40,35 +39,44 @@ export const counterSlice = createSlice({
       // state = resetToThis
       // localStorage.setItem('savedGame', JSON.stringify(resetToThis))
     },
+    activateFirstSkill: (state) => {
+      // state.showSkillOneInput = !state.showSkillOneInput;
+      setInterval(() => {
+        hitEnemy((state.charDamage + state.weaponDamage))
+      }, 1000);
+    },
     enemyKilled: (state, action) => {
-      if(state.stage.level === 2) {
-        state.stage.chapter += 1
-        state.stage.level = 1
+      if (state.stage.level === 2) {
+        state.stage.chapter += 1;
+        state.stage.level = 1;
       } else {
-        state.stage.level += 1
+        state.stage.level += 1;
       }
-      state.money += action.payload.bounty
-      state.value = (10 * state.stage.chapter) * (state.stage.level * state.stage.chapter * 1.5)
+      state.money += action.payload.bounty;
+      state.value =
+        10 *
+        state.stage.chapter *
+        (state.stage.level * state.stage.chapter * 1.5);
     },
     hitEnemy: (state, action) => {
-      if(state.currentEnemyHealth && state.currentEnemyHealth > 0) {
-        state.currentEnemyHealth -= action.payload
+      if (state.currentEnemyHealth && state.currentEnemyHealth > 0) {
+        state.currentEnemyHealth -= action.payload;
       } else {
-        state.currentEnemyHealth = state.value - action.payload
+        state.currentEnemyHealth = state.value - action.payload;
       }
       // localStorage.setItem('savedGame', JSON.stringify(state))
     },
     upgradeWeapon: (state, action) => {
-      state.weaponDamage += 1
-      state.weaponLevel += 1
-      state.money -= action.payload
+      state.weaponDamage += state.weaponLevel;
+      state.weaponLevel += 1;
+      state.money -= action.payload;
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
     incrementByAmount: (state, action) => {
-      if(state.currentEnemyHealth) {
-        state.currentEnemyHealth -= action.payload
+      if (state.currentEnemyHealth) {
+        state.currentEnemyHealth -= action.payload;
       } else {
-        state.currentEnemyHealth = state.value - action.payload
+        state.currentEnemyHealth = state.value - action.payload;
       }
     },
   },
@@ -77,16 +85,23 @@ export const counterSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(incrementAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(incrementAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = "idle";
         state.value += action.payload;
       });
   },
 });
 
-export const { resetState, hitEnemy, incrementByAmount, enemyKilled, upgradeWeapon } = counterSlice.actions;
+export const {
+  resetState,
+  hitEnemy,
+  incrementByAmount,
+  enemyKilled,
+  upgradeWeapon,
+  activateFirstSkill
+} = counterSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
@@ -94,16 +109,19 @@ export const { resetState, hitEnemy, incrementByAmount, enemyKilled, upgradeWeap
 export const selectCount = (state) => state.counter.value;
 export const money = (state) => state.counter.money;
 export const stage = (state) => state.counter.stage;
-export const charDamage = (state) => state.counter.charDamage;
+export const charDamage = (state) => state.character.characterAttribute.strength;
 export const weaponLevel = (state) => state.counter.weaponLevel;
-export const weaponUpgradePrice = (state) => state.counter.weaponLevel * 50;
+export const weaponUpgradePrice = (state) => state.counter.weaponLevel * 50 * state.counter.weaponLevel;
 export const weaponDamage = (state) => state.counter.weaponDamage;
 export const currentEnemyHealth = (state) => state.counter.currentEnemyHealth;
-export const enemyBounty = (state) => (state.counter.stage.chapter * 10) * state.counter.stage.level * state.counter.stage.chapter
-export const totalDamage = (state) => state.counter.charDamage + state.counter.weaponDamage
-
-
-
+export const showSkillOneInput = (state) => state.counter.showSkillOneInput;
+export const enemyBounty = (state) =>
+  state.counter.stage.chapter *
+  10 *
+  state.counter.stage.level *
+  state.counter.stage.chapter;
+export const totalDamage = (state) =>
+  state.counter.charDamage + state.counter.weaponDamage;
 
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.
