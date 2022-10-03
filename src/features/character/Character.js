@@ -1,10 +1,9 @@
 import { useSelector } from "react-redux";
-import {hitDamage} from "../character/characterSlice";
 
 function Character() {
   const {characterLevel, characterAttribute, characterEquipment } = useSelector((state) => state.character)
 
-  const charDamage = useSelector(hitDamage)
+  const charDamage = characterAttribute.strength * 2
 
   return (
     <>

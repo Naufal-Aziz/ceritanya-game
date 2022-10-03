@@ -1,52 +1,39 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
-import {
-  resetState,
-  hitEnemy,
-  totalDamage,
-  upgradeWeapon,
-  weaponLevel,
-  weaponUpgradePrice,
-  money,
-  currentEnemyHealth,
-  enemyKilled,
-  selectCount,
-  showSkillOneInput,
-} from "./features/counter/counterSlice";
 import Header from "./components/Header";
 import Character from "./features/character/Character";
 import Enemy from "./features/enemy/Enemy";
 import Skillbar from "./components/Skillbar";
+import {hitEnemy2} from './features/counter/counterSlice'
+import {upgradeWeapon} from './features/character/characterSlice'
+
+
 
 function App() {
-  const hitDamage = useSelector(totalDamage);
-  const weaponLv = useSelector(weaponLevel);
-  const upgradePrice = useSelector(weaponUpgradePrice);
-  const charMoney = useSelector(money);
-  const remainingEnemyHealth = useSelector(currentEnemyHealth);
-  const enemyHealth = useSelector(selectCount);
-  const remainingHealthToCount = remainingEnemyHealth
-    ? remainingEnemyHealth
-    : enemyHealth;
-  const isFirstSkillActive = useSelector(showSkillOneInput);
+  const characterState = useSelector((state) => state.character) 
+  const generalState = useSelector((state) => state.counter)
+  const gameState = {
+    characterState,
+    generalState
+  }
+  const saveGame = () => {
+    localStorage.setItem('gameState', JSON.stringify(gameState))
+  }
 
   const dispatch = useDispatch();
 
+  const weaponLv = useSelector((state) => state.character.characterEquipment.weaponLevel);
+  const weaponPrice = useSelector((state) => state.character.characterEquipment.weaponLevel * 50);
+
+
   const dealDamage = () => {
-    dispatch(hitEnemy(hitDamage));
+    dispatch(hitEnemy2());
   };
 
-  const resetGame = () => {
-    dispatch(resetState());
-  };
 
   const upWeapon = () => {
-    if (charMoney < upgradePrice) {
-      return;
-    } else {
-      dispatch(upgradeWeapon(upgradePrice));
-    }
+      dispatch(upgradeWeapon(weaponPrice));
   };
 
   return (
@@ -64,13 +51,6 @@ function App() {
       >
         <h1>CLICK HERE</h1>
       </div>
-      {isFirstSkillActive ? (
-        <div className="border border-black m-2">
-          <input type="text" placeholder="TYPE AS MANY CHARACTERS AS YOU CAN" className="w-full p-2"/>
-        </div>
-      ) : (
-        <></>
-      )}
 
       <div className="flex flex-col items-center border border-black mx-2 p-2">
         <p>Lv.{weaponLv}</p>
@@ -78,15 +58,15 @@ function App() {
           onClick={upWeapon}
           className="p-2 bg-gray-400 rounded-lg text-white"
         >
-          UPGRADE WEAPON for ${upgradePrice}
+          UPGRADE WEAPON for ${weaponPrice}
         </button>
       </div>
       <div>
         <button
-          onClick={resetGame}
+          onClick={saveGame}
           className="border border-gray-300 bg-gray-300 p-2"
         >
-          RESET GAME
+          SAVE GAME
         </button>
       </div>
     </>
