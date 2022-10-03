@@ -10,21 +10,26 @@ import {
 const Enemy = () => {
   const dispatch = useDispatch();
 
+  const {firstSkill_isActive} = useSelector(
+    (state) => state.skills
+  );
+
   let enemyHealth = useSelector(selectCount);
   let bounty = useSelector(enemyBounty);
   let currentHealth = useSelector(currentEnemyHealth);
-  let currentToCount = currentHealth && currentHealth >= 0 ? currentHealth : enemyHealth;
+  let currentToCount =
+    currentHealth && currentHealth >= 0 ? currentHealth : enemyHealth;
   let healthPercentage = (currentToCount / enemyHealth) * 100;
 
   useEffect(() => {
-    if (currentHealth == null) return
+    if (currentHealth == null) return;
     if (currentHealth <= 0) {
-      dispatch(enemyKilled({bounty}));
+      dispatch(enemyKilled({ bounty }));
     }
   }, [currentHealth]);
 
   return (
-    <div className="border border-gray-600 p-4 w-1/2">
+    <div className={`${firstSkill_isActive && 'animate-shake'} border border-gray-600 p-4 w-1/2 relative`}>
       <div className="flex items-center justify-center">
         <div className="w-[100px] h-[100px] rounded-full overflow-hidden flex items-center">
           <img
@@ -47,6 +52,13 @@ const Enemy = () => {
           style={{ width: `${healthPercentage}%` }}
         ></div>
       </div>
+      {firstSkill_isActive ? (
+        <div className="absolute top-4 left-56 animate-spin">
+          <div className="border-4 p-12 border-red-500"></div>
+        </div>
+      ) : (
+        <div></div>
+      )}
     </div>
   );
 };
