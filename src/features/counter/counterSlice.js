@@ -2,14 +2,15 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 // const initialState = JSON.parse(localStorage.getItem('savedGame'))
 
-const initialState = localStorage.getItem('gameState') ? JSON.parse(localStorage.getItem('gameState')).generalState : {
-  money: 0,
-  currentEnemyHealth: null,
-  stage: { chapter: 1, level: 1 },
-  value: 10,
-};
+const initialState = localStorage.getItem("gameState")
+  ? JSON.parse(localStorage.getItem("gameState")).generalState
+  : {
+      money: 0,
+      currentEnemyHealth: null,
+      stage: { chapter: 1, level: 1 },
+      value: 10,
+    };
 // console.log(JSON.parse(localStorage.getItem('savedGame')))
-
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -18,11 +19,13 @@ const initialState = localStorage.getItem('gameState') ? JSON.parse(localStorage
 // typically used to make async requests.
 export const hitEnemy2 = createAsyncThunk(
   "counter/hitEnemy",
-  async (_, thunkAPI) => {
+  async (payload, thunkAPI) => {
     try {
-      const weaponDamage = await thunkAPI.getState().character.characterEquipment.weaponDamage
-      const charDamage = await thunkAPI.getState().character.characterAttribute.strength * 2
-      return weaponDamage + charDamage;
+      const weaponDamage = await thunkAPI.getState().character
+        .characterEquipment.weaponDamage;
+      const charDamage =
+        (await thunkAPI.getState().character.characterAttribute.strength) * 2;
+      return payload ? (weaponDamage + charDamage)/payload : weaponDamage + charDamage
     } catch (error) {
       console.log(error);
     }
@@ -95,7 +98,7 @@ export const counterSlice = createSlice({
         } else {
           state.currentEnemyHealth = state.value - action.payload;
         }
-        console.log('ajosssss', action.payload);
+        console.log("ajosssss", action.payload);
       });
   },
 });

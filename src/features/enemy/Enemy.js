@@ -52,12 +52,10 @@ const Enemy = () => {
           style={{ width: `${healthPercentage}%` }}
         ></div>
       </div>
-      {firstSkill_isActive ? (
+      {firstSkill_isActive && (
         <div className="absolute top-4 left-56 animate-spin">
           <div className="border-4 p-12 border-red-500"></div>
         </div>
-      ) : (
-        <div></div>
       )}
     </div>
   );

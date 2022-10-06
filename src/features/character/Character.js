@@ -28,7 +28,7 @@ function Character() {
             <li>
               Weapon 'lv.{characterEquipment.weaponLevel}' Damage : {characterEquipment.weaponDamage}
             </li>
-            <li>Total Damage :</li>
+            <li>Total Damage : {charDamage + characterEquipment.weaponDamage}</li>
           </ul>
         </div>
       </div>
